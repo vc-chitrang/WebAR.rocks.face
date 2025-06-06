@@ -124,6 +124,31 @@ function initializeFirstModel() {
 }
 
 function start() {
+  // Initialize the UI elements
+  initializeUI();
+}
+
+function initializeUI() {
+  // Add click handler to the start camera button
+  const startButton = document.querySelector('.btn-primary');
+  if (startButton) {
+    startButton.addEventListener('click', startCamera);
+  }
+}
+
+function startCamera() {
+  // Hide the camera overlay
+  const cameraOverlay = document.querySelector('.camera-overlay');
+  if (cameraOverlay) {
+    cameraOverlay.classList.add('hidden');
+  }
+
+  // Hide the start button
+  const startButton = document.querySelector('.btn-primary');
+  if (startButton) {
+    startButton.classList.add('hidden');
+  }
+
   // Init WebAR.rocks.face through the earrings 3D helper:
   WebARRocksFaceEarrings3DHelper.init({
     NN: "../../neuralNets/NN_EARS_4.json",
@@ -131,7 +156,6 @@ function start() {
     canvasFace: _canvases.face,
     canvasThree: _canvases.three,
     debugOccluder: _settings.debugOccluder,
-    //,videoURL: '../../../../testVideos/1032526922-hd.mov'
   })
     .then(function (three) {
       _three = three;
@@ -149,9 +173,7 @@ function start() {
       _three.renderer.outputEncoding = THREE.sRGBEncoding;
 
       set_postprocessing();
-
       set_lighting();
-
       set_occluders();
       
       // Initialize the first model
@@ -165,6 +187,22 @@ function start() {
       }
     })
     .catch(function (err) {
+      // Show error in the overlay and show the start button again
+      const cameraOverlay = document.querySelector('.camera-overlay');
+      if (cameraOverlay) {
+        cameraOverlay.classList.remove('hidden');
+        const errorText = cameraOverlay.querySelector('.camera-text');
+        if (errorText) {
+          errorText.textContent = 'Error starting camera';
+        }
+      }
+      
+      // Show the start button again if there's an error
+      const startButton = document.querySelector('.btn-primary');
+      if (startButton) {
+        startButton.classList.remove('hidden');
+      }
+      
       throw new Error(err);
     });
 }
