@@ -39,6 +39,16 @@ let _three = null;
 
 let currentEarring = 0;
 
+const products = [
+{
+  id:0,
+  name: "Earring 1",
+  imageurl: "assets/previews/earring_0.jpg",
+  modelurl: "assets/earringsSimple_0.glb",
+  price: 10.99,
+}
+];
+
 function SetModelVisibility(model, visible) {
   if (model) {
     model.visible = visible;
