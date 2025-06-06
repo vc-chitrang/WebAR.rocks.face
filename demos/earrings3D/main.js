@@ -1,10 +1,10 @@
 const PI = Math.PI;
 const _settings = {
   // 3D model:
-  GLTFModelURL: 'assets/earringsSimple.glb',
+  GLTFModelURL: "assets/earringsSimple.glb",
 
   // lighting:
-  envmapURL: 'assets/venice_sunset_512.hdr',
+  envmapURL: "assets/venice_sunset_512.hdr",
   pointLightIntensity: 0.8,
   pointLightY: 200, // larger -> move the pointLight to the top
   hemiLightIntensity: 0.8,
@@ -13,7 +13,7 @@ const _settings = {
   bloom: {
     threshold: 0.5, //0.99,
     strength: 8,
-    radius: 0.6
+    radius: 0.6,
   },
 
   // temporal anti aliasing. Number of samples. 0 -> disabled:
@@ -23,135 +23,247 @@ const _settings = {
   earsOccluderCylinderRadius: 2,
   earsOccluderCylinderHeight: 0.5, // height of the cylinder, so depth in fact
   earsOccluderCylinderOffset: [0, 1, 0], // +Y -> pull up
-  earsOccluderCylinderEuler: [0,PI/6,PI/2,'XYZ'],
+  earsOccluderCylinderEuler: [0, PI / 6, PI / 2, "XYZ"],
 
   // debug flags:
   debugCube: false,
-  debugOccluder: false // set to true to tune earsOccluderCylinder* settings
+  debugOccluder: false, // set to true to tune earsOccluderCylinder* settings
 };
 
 const _canvases = {
   face: null,
-  three: null
+  three: null,
 };
 
 let _three = null;
 
+let currentEarring = 0;
 
-function start(){
+function SetModelVisibility(model, visible) {
+  if (model) {
+    model.visible = visible;
+    console.log(`Visible: ${visible}`);
+  }
+}
+
+function HideAllModels() {
+  if (_three) {
+    // Unload previous model from right ear
+    if (_three.earringRight.children.length > 0) {
+      _three.earringRight.children.forEach((model) =>
+        SetModelVisibility(model, false)
+      );
+    }
+    // Unload previous model from left ear
+    if (_three.earringLeft.children.length > 0) {
+      _three.earringLeft.children.forEach((model) =>
+        SetModelVisibility(model, false)
+      );
+    }
+  }
+}
+
+function NextEarring() {
+  currentEarring++;
+  if (currentEarring >= 2) {
+    currentEarring = 0;
+  }
+  console.log("Current Earring: " + currentEarring);
+
+  // Update the 3D model when changing earrings
+  if (_settings.GLTFModelURL && _three) {
+    HideAllModels();
+    let modelURL = `assets/earringsSimple_${currentEarring}.glb`;
+    load_GLTF(modelURL, true, true);
+  }
+}
+
+function PreviousEarring() {
+  currentEarring--;
+  if (currentEarring < 0) {
+    currentEarring = 1;
+  }
+  console.log("Current Earring: " + currentEarring);
+
+  // Update the 3D model when changing earrings
+  if (_settings.GLTFModelURL && _three) {
+    HideAllModels();
+    let modelURL = `assets/earringsSimple_${currentEarring}.glb`;
+    load_GLTF(modelURL, true, true);
+  }
+}
+
+function SelectModel(index) {
+  // Remove selected class from all cards
+  document.querySelectorAll('.card').forEach(card => {
+    card.classList.remove('selected');
+  });
   
+  // Add selected class to the clicked card
+  const selectedCard = document.querySelector(`.card[data-earring="${index}"]`);
+  if (selectedCard) {
+    selectedCard.classList.add('selected');
+  }
+  
+  currentEarring = index;
+  console.log(`Selected model: ${index}`);
+  
+  // Update the 3D model when changing earrings
+  if (_settings.GLTFModelURL && _three) {
+    HideAllModels();
+    let modelURL = `assets/earringsSimple_${currentEarring}.glb`;
+    load_GLTF(modelURL, true, true);
+  }
+}
+
+// Initialize the first model as selected when the page loads
+function initializeFirstModel() {
+  if (_settings.GLTFModelURL && _three) {
+    SelectModel(0); // Select the first model by default
+  }
+}
+
+function start() {
   // Init WebAR.rocks.face through the earrings 3D helper:
   WebARRocksFaceEarrings3DHelper.init({
-    NN: '../../neuralNets/NN_EARS_4.json',
+    NN: "../../neuralNets/NN_EARS_4.json",
     taaLevel: _settings.taaLevel,
     canvasFace: _canvases.face,
     canvasThree: _canvases.three,
-    debugOccluder: _settings.debugOccluder
-    //,videoURL: '../../../../testVideos/1032526922-hd.mov'    
-  }).then(function(three){
-    
-    _three = three;
-    if (_settings.debugCube){
-      const debugCubeMesh = new THREE.Mesh(
-          new THREE.BoxGeometry(2,2,2),
+    debugOccluder: _settings.debugOccluder,
+    //,videoURL: '../../../../testVideos/1032526922-hd.mov'
+  })
+    .then(function (three) {
+      _three = three;
+      if (_settings.debugCube) {
+        const debugCubeMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(2, 2, 2),
           new THREE.MeshNormalMaterial()
         );
-      _three.earringRight.add(debugCubeMesh);
-      _three.earringLeft.add(debugCubeMesh.clone()); 
-    }
+        _three.earringRight.add(debugCubeMesh);
+        _three.earringLeft.add(debugCubeMesh.clone());
+      }
 
-    // improve WebGLRenderer settings:
-    _three.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    _three.renderer.outputEncoding = THREE.sRGBEncoding;
+      // improve WebGLRenderer settings:
+      _three.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      _three.renderer.outputEncoding = THREE.sRGBEncoding;
 
-    set_postprocessing();
+      set_postprocessing();
 
-    set_lighting();
+      set_lighting();
 
-    if (_settings.GLTFModelURL){
-      load_GLTF(_settings.GLTFModelURL, true, true);
-    }
+      set_occluders();
+      
+      // Initialize the first model
+      initializeFirstModel();
 
-    set_occluders();
-
-    if (check_isAppleCrap()){
-      WebARRocksFaceEarrings3DHelper.resize(_canvases.three.width, _canvases.three.height - 0.001);
-    }
-  }).catch(function(err){
-    throw new Error(err);
-  });
+      if (check_isAppleCrap()) {
+        WebARRocksFaceEarrings3DHelper.resize(
+          _canvases.three.width,
+          _canvases.three.height - 0.001
+        );
+      }
+    })
+    .catch(function (err) {
+      throw new Error(err);
+    });
 }
-
 
 // return true if IOS:
-function check_isAppleCrap(){
-  return /iPad|iPhone|iPod/.test(navigator.platform)
-    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function check_isAppleCrap() {
+  return (
+    /iPad|iPhone|iPod/.test(navigator.platform) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
 }
 
-
-function set_postprocessing(){
+function set_postprocessing() {
   // bloom:
-  if (_settings.bloom){ // see https://threejs.org/examples/#webgl_postprocessing_unreal_bloom
+  if (_settings.bloom) {
+    // see https://threejs.org/examples/#webgl_postprocessing_unreal_bloom
     // create the bloom postprocessing pass:
     const bloom = _settings.bloom;
     const rendererSize = new THREE.Vector2();
     _three.renderer.getSize(rendererSize);
-    const bloomPass = new THREE.UnrealBloomPass( rendererSize,
-       bloom.strength,
-       bloom.radius,
-       bloom.threshold);
+    const bloomPass = new THREE.UnrealBloomPass(
+      rendererSize,
+      bloom.strength,
+      bloom.radius,
+      bloom.threshold
+    );
 
-    _three.composer.addPass( bloomPass );
+    _three.composer.addPass(bloomPass);
   }
 }
 
-
-function set_lighting(){
-  if (_settings.envmapURL){
+function set_lighting() {
+  if (_settings.envmapURL) {
     // image based lighting:
-    const pmremGenerator = new THREE.PMREMGenerator( _three.renderer );
+    const pmremGenerator = new THREE.PMREMGenerator(_three.renderer);
     pmremGenerator.compileEquirectangularShader();
 
-    new THREE.RGBELoader().setDataType( THREE.HalfFloatType )
-      .load(_settings.envmapURL, function ( texture ) {
-      const envMap = pmremGenerator.fromEquirectangular( texture ).texture;
-      pmremGenerator.dispose();
-      _three.scene.environment = envMap;
-    });
+    new THREE.RGBELoader()
+      .setDataType(THREE.HalfFloatType)
+      .load(_settings.envmapURL, function (texture) {
+        const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+        pmremGenerator.dispose();
+        _three.scene.environment = envMap;
+      });
+  }
 
-  } 
-  
   // simple lighting:
   //  We add a soft light. Should not be necessary if we use an envmap:
   if (_settings.hemiLightIntensity > 0) {
-    const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x000000, _settings.hemiLightIntensity );
+    const hemiLight = new THREE.HemisphereLight(
+      0xffffff,
+      0x000000,
+      _settings.hemiLightIntensity
+    );
     _three.scene.add(hemiLight);
   }
 
   // add a pointLight to highlight specular lighting:
-  if ( _settings.pointLightIntensity > 0){
-    const pointLight = new THREE.PointLight( 0xffffff, _settings.pointLightIntensity );
+  if (_settings.pointLightIntensity > 0) {
+    const pointLight = new THREE.PointLight(
+      0xffffff,
+      _settings.pointLightIntensity
+    );
     pointLight.position.set(0, _settings.pointLightY, 0);
     _three.scene.add(pointLight);
   }
 }
 
-
-function load_GLTF(modelURL, isRight, isLeft){
-  new THREE.GLTFLoader().load(modelURL, function(gltf){
+function load_GLTF(modelURL, isRight, isLeft) {
+  new THREE.GLTFLoader().load(modelURL, function (gltf) {
     const model = gltf.scene;
     model.scale.multiplyScalar(100); // because the model is exported in meters. convert it to cm
     set_shinyMetal(model);
-    _three.earringRight.add(model);
-    _three.earringLeft.add(model.clone()); 
+
+    const existingRightEarringModel = _three.earringRight.children.find(
+      (child) => child.uuid === model.uuid
+    );
+    if (existingRightEarringModel) {
+      SetModelVisibility(existingRightEarringModel, true);
+    } else {
+      _three.earringRight.add(model);
+    }
+
+    const existingLeftEarringModel = _three.earringLeft.children.find(
+      (child) => child.uuid === model.uuid
+    );
+    if (existingLeftEarringModel) {
+      SetModelVisibility(existingLeftEarringModel, true);
+    } else {
+      _three.earringLeft.add(model.clone());
+    }
+
+    console.log(`Count: ${_three.earringRight.children.length}`);
   });
 }
 
-
-function set_shinyMetal(model){
-  model.traverse(function(threeStuff){
-    if (!threeStuff.isMesh){
+function set_shinyMetal(model) {
+  model.traverse(function (threeStuff) {
+    if (!threeStuff.isMesh) {
       return;
     }
     const mat = threeStuff.material;
@@ -161,31 +273,49 @@ function set_shinyMetal(model){
   });
 }
 
-
-function set_occluders(){
-  const occluderRightGeom = new THREE.CylinderGeometry(_settings.earsOccluderCylinderRadius, _settings.earsOccluderCylinderRadius, _settings.earsOccluderCylinderHeight);
-  const matrix = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler().fromArray(_settings.earsOccluderCylinderEuler));
-  matrix.setPosition(new THREE.Vector3().fromArray(_settings.earsOccluderCylinderOffset));
+function set_occluders() {
+  const occluderRightGeom = new THREE.CylinderGeometry(
+    _settings.earsOccluderCylinderRadius,
+    _settings.earsOccluderCylinderRadius,
+    _settings.earsOccluderCylinderHeight
+  );
+  const matrix = new THREE.Matrix4().makeRotationFromEuler(
+    new THREE.Euler().fromArray(_settings.earsOccluderCylinderEuler)
+  );
+  matrix.setPosition(
+    new THREE.Vector3().fromArray(_settings.earsOccluderCylinderOffset)
+  );
   occluderRightGeom.applyMatrix4(matrix);
   WebARRocksFaceEarrings3DHelper.add_threeEarsOccluders(occluderRightGeom);
 }
 
-
-function main(){
+function main() {
   // get the 2 canvas from the DOM:
-  _canvases.face = document.getElementById('WebARRocksFaceCanvas');
-  _canvases.three = document.getElementById('threeCanvas');
+  _canvases.face = document.getElementById("WebARRocksFaceCanvas");
+  _canvases.three = document.getElementById("threeCanvas");
+
+  // Initialize card click handlers
+  initializeCardClickHandlers();
 
   // Set the canvas to fullscreen
   // and add an event handler to capture window resize:
   WebARRocksResizer.size_canvas({
     isFullScreen: true,
-    canvas: _canvases.face,     // WebARRocksFace main canvas
+    canvas: _canvases.face, // WebARRocksFace main canvas
     overlayCanvas: [_canvases.three], // other canvas which should be resized at the same size of the main canvas
     callback: start,
-    onResize: WebARRocksFaceEarrings3DHelper.resize
-  })
+    onResize: WebARRocksFaceEarrings3DHelper.resize,
+  });
 }
 
+function initializeCardClickHandlers() {
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((card) => {
+    card.addEventListener("click", function () {
+      const earringIndex = parseInt(this.getAttribute("data-earring"));
+      SelectModel(earringIndex);
+    });
+  });
+}
 
-window.addEventListener('load', main);
+window.addEventListener("load", main);
