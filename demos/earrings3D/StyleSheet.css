@@ -589,3 +589,84 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.card-scroll-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  overflow-x: auto;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.card-scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.card {
+  display: inline-block;
+  background: linear-gradient(145deg, #ffffff, #fff5c0);
+  margin: 0 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  min-width: 150px;
+  max-width: 150px;
+  vertical-align: middle;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card.selected {
+  border: 2px solid #d97706;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(217, 119, 6, 0.2);
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 600px) {
+  .card-scroll-container {
+    width: 95%;
+    bottom: 10px;
+    padding: 10px;
+  }
+  
+  .card {
+    min-width: 120px;
+    margin: 0 5px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .card-scroll-container {
+    width: 92%;
+    bottom: 15px;
+  }
+  
+  .card {
+    min-width: 180px;
+  }
+}

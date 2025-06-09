@@ -48,6 +48,29 @@
     <script src="./main.js"></script>
 
     <link rel="stylesheet" href="StyleSheet.css" />
+    <style>
+      .product-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .product-label {
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        text-align: center;
+        padding: 8px;
+        line-height: 1.2;
+        height: 2.4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+    </style>
   </head>
   <body>
     <section class="try-on-section">
@@ -120,47 +143,70 @@
           <!-- Jewelry Selection -->
           <div class="jewelry-section">
             <h3 class="section-title">Select Jewelry</h3>
-
-            <div
-              class="jewelry-grid"
-              style="display: flex; overflow-x: auto; gap: 16px; padding: 8px 0"
-            >
-              <div
-                class="jewelry-card selected"
-                style="min-width: 200px; flex-shrink: 0; padding: 8px 16px"
-              >
-                <h4 class="jewelry-title" style="margin: 0">Diamond Earrings</h4>
-              </div>
-
-              <div
-                class="jewelry-card"
-                style="min-width: 200px; flex-shrink: 0; padding: 8px 16px"
-              >
-                <h4 class="jewelry-title" style="margin: 0">Pearl Necklace</h4>
-              </div>
+            <div class="jewelry-selection-container">
+              <!-- <div class="jewelry-category-tabs">
+                <div class="jewelry-tab selected">
+                  <h4 class="jewelry-title">Diamond Earrings</h4>
+                </div>
+                <div class="jewelry-tab">
+                  <h4 class="jewelry-title">Pearl Necklace</h4>
+                </div>
+              </div> -->
               
-            </div>
+              <div class="products-grid" style="display: flex; overflow-x: auto; gap: 16px; padding: 16px 0; scrollbar-width: thin;">
+                <div class="product-card" data-earring="0" onclick="SelectModel(0)" style="flex: 0 0 auto; min-width: 150px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                  <div class="product-image" style="width: 100%; height: 150px; background-size: cover; background-position: center; background-image: url('assets/previews/earring_0.jpg');">
+                  </div>
+                  <div class="product-label">Twist Diamond Hoop</div>
+                </div>
+                <div class="product-card" data-earring="1" onclick="SelectModel(1)" style="flex: 0 0 auto; min-width: 150px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                  <div class="product-image" style="width: 100%; height: 150px; background-size: cover; background-position: center; background-image: url('assets/previews/earring_1.jpg');">
+                  </div>
+                  <div class="product-label">Gold V-Hoop</div>
+                </div>
+                <div class="product-card" data-earring="2" onclick="SelectModel(2)" style="flex: 0 0 auto; min-width: 150px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                  <div class="product-image" style="width: 100%; height: 150px; background-size: cover; background-position: center; background-image: url('assets/previews/earring_2.jpg');">
+                  </div>
+                  <div class="product-label">Channel Set Hoop</div>
+                </div>
+                <div class="product-card" data-earring="3" onclick="SelectModel(3)" style="flex: 0 0 auto; min-width: 150px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                  <div class="product-image" style="width: 100%; height: 150px; background-size: cover; background-position: center; background-image: url('assets/previews/earring_3.jpg');">
+                  </div>
+                  <div class="product-label">Snake Dangle</div>
+                </div>
+                <div class="product-card" data-earring="4" onclick="SelectModel(4)" style="flex: 0 0 auto; min-width: 150px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                  <div class="product-image" style="width: 100%; height: 150px; background-size: cover; background-position: center; background-image: url('assets/previews/earring_4.jpg');">
+                  </div>
+                  <div class="product-label">Butterfly Hoop</div>
+                </div>
+                <div class="product-card" data-earring="5" onclick="SelectModel(5)" style="flex: 0 0 auto; min-width: 150px; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                  <div class="product-image" style="width: 100%; height: 150px; background-size: cover; background-position: center; background-image: url('assets/previews/earring_5.jpg');">
+                  </div>
+                  <div class="product-label">Boho Circle Dangle</div>
+                </div>
+              </div>
+            
 
             <div class="info-box">
               <h4 class="info-title">How it works:</h4>
               <ul class="info-list">
                 <li class="info-item">
-                  <span class="step-number">1.</span>
+                  <span class="step-number">1</span>
                   <span
                     >Allow camera access and position yourself in the
                     frame</span
                   >
                 </li>
                 <li class="info-item">
-                  <span class="step-number">2.</span>
+                  <span class="step-number">2</span>
                   <span>Select the jewelry piece you'd like to try on</span>
                 </li>
                 <li class="info-item">
-                  <span class="step-number">3.</span>
+                  <span class="step-number">3</span>
                   <span>See the virtual jewelry overlay in real-time</span>
                 </li>
                 <li class="info-item">
-                  <span class="step-number">4.</span>
+                  <span class="step-number">4</span>
                   <span>Capture and save your favorite looks</span>
                 </li>
               </ul>
