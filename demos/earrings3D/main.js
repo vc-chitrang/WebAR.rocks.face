@@ -39,20 +39,20 @@ let _three = null;
 
 let currentEarring = 0;
 
-const products = [
-{
-  id:0,
-  name: "Earring 1",
-  imageurl: "assets/previews/earring_0.jpg",
-  modelurl: "assets/earringsSimple_0.glb",
-  price: 10.99,
-}
-];
+// const products = [
+// {
+//   id:0,
+//   name: "Earring 1",
+//   imageurl: "assets/previews/earring_0.jpg",
+//   modelurl: "assets/earringsSimple_0.glb",
+//   price: 10.99,
+// }
+// ];
 
 function SetModelVisibility(model, visible) {
   if (model) {
     model.visible = visible;
-    console.log(`Visible: ${visible}`);
+    // console.log(`Visible: ${visible}`);
   }
 }
 
@@ -135,7 +135,8 @@ function initializeFirstModel() {
 
 function start() {
   // Initialize the UI elements
-  initializeUI();
+  // initializeUI();
+  startCamera();
 }
 
 function initializeUI() {
@@ -146,19 +147,7 @@ function initializeUI() {
   }
 }
 
-function startCamera() {
-  // Hide the camera overlay
-  const cameraOverlay = document.querySelector('.camera-overlay');
-  if (cameraOverlay) {
-    cameraOverlay.classList.add('hidden');
-  }
-
-  // Hide the start button
-  const startButton = document.querySelector('.btn-primary');
-  if (startButton) {
-    startButton.classList.add('hidden');
-  }
-
+function startCamera() {  
   // Init WebAR.rocks.face through the earrings 3D helper:
   WebARRocksFaceEarrings3DHelper.init({
     NN: "../../neuralNets/NN_EARS_4.json",
@@ -196,23 +185,7 @@ function startCamera() {
         );
       }
     })
-    .catch(function (err) {
-      // Show error in the overlay and show the start button again
-      const cameraOverlay = document.querySelector('.camera-overlay');
-      if (cameraOverlay) {
-        cameraOverlay.classList.remove('hidden');
-        const errorText = cameraOverlay.querySelector('.camera-text');
-        if (errorText) {
-          errorText.textContent = 'Error starting camera';
-        }
-      }
-      
-      // Show the start button again if there's an error
-      const startButton = document.querySelector('.btn-primary');
-      if (startButton) {
-        startButton.classList.remove('hidden');
-      }
-      
+    .catch(function (err) {     
       throw new Error(err);
     });
 }

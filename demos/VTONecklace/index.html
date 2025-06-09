@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta http-equiv="content-language" content="en-EN" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
 
     <title>Necklace VTO Demo</title>
-    
+
     <!-- INCLUDE WebAR.rocks.face MAIN SCRIPT -->
     <script src="../../dist/WebARRocksFace.js"></script>
-    
+
     <!-- INCLUDE MAIN HELPER -->
     <script src="../../helpers/WebARRocksFaceThreeHelper.js"></script>
 
@@ -30,45 +33,266 @@
     <!-- Bloom postprocessing: -->
     <script src="../../libs/three/v136/examples/js/postprocessing/UnrealBloomPassTweaked.js"></script>
     <script src="../../libs/three/v136/examples/js/shaders/LuminosityHighPassShader.js"></script>
-    
+
     <!-- TAA specifics: -->
     <script src="../../libs/three/v136/examples/js/postprocessing/SSAARenderPass.js"></script>
     <script src="../../libs/three/v136/examples/js/postprocessing/TAARenderPass.js"></script>
 
     <!-- INCLUDE WebAR.rocks.mirror main helper -->
     <script src="../../helpers/WebARRocksMirror.js"></script>
-    
+
     <!-- INCLUDE LANDMARKS STABILIZER -->
     <!-- <script src="../../helpers/landmarksStabilizers/WebARRocksLMStabilizer2.js"></script> -->
     <script src="../../helpers/landmarksStabilizers/OneEuroLMStabilizer.js"></script>
-    
+
     <!-- INCLUDE MAIN DEMO SCRIPT: -->
     <script src="./main.js"></script>
 
-    <style type='text/css'>
-      body {
-        margin: 0;
-        background-color: silver;
+    <link rel="stylesheet" href="StyleSheet.css" />
+    <style>
+      .product-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-label {
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        text-align: center;
+        padding: 8px;
+        line-height: 1.2;
+        height: 2.4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
-      #WebARRocksFaceCanvas, #threeCanvas {
-        position: fixed;
-        width: 100vw;
-        top: 0;
-        left: 0;
+    </style>
+  </head>
+  <body>
+    <section class="try-on-section">
+      <div class="container">
+        <div class="header text-center">
+          <div class="header-title">
+            <svg class="sparkle-icon" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              />
+            </svg>
+            <h1 class="main-title">Virtual Try-On Experience</h1>
+          </div>
+          <p class="subtitle">
+            See how our exquisite jewelry looks on you with our advanced virtual
+            try-on technology. Experience luxury from the comfort of your home.
+          </p>
+          <div class="navigation-links">
+            <a href="http://127.0.0.1:8080/demos/earrings3D/" class="nav-button"
+              >Earrings</a
+            >
+            <a
+              href="http://127.0.0.1:8080/demos/VTONecklace/"
+              class="nav-button"
+              >Necklace</a
+            >
+          </div>
+        </div>
 
-        /* mirror the canvas: */
-        transform: rotateY(180deg);
-      }
+        <div class="grid">
+          <!-- Camera Section -->
+          <div class="camera-section">
+            <div class="camera-container">
+              <div class="camera-placeholder">
+                <div class="canvas-container">
+                  <!-- canvas where the necklace will be displayed: -->
+                  <canvas
+                    width="600"
+                    height="600"
+                    id="threeCanvas"
+                    class="ar-canvas"
+                  ></canvas>
 
-      #WebARRocksFaceCanvas {
-        z-index: 0;
-      }
-      #threeCanvas {
-        z-index: 1;
-      }
+                  <!-- canvas where the video will be displayed: -->
+                  <canvas
+                    width="600"
+                    height="600"
+                    id="WebARRocksFaceCanvas"
+                    class="ar-canvas"
+                  ></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      #controls {
+          <!-- Jewelry Selection -->
+          <div class="jewelry-section">
+            <h3 class="section-title">Select Necklace</h3>
+            <div class="jewelry-selection-container">
+              <div
+                class="products-grid"
+                style="
+                  display: flex;
+                  overflow-x: auto;
+                  gap: 16px;
+                  padding: 16px 0;
+                  scrollbar-width: thin;
+                "
+              >
+                <div
+                  class="product-card"
+                  onclick="WebARRocksMirror.load('assets/models3D/necklace_00.glb')"
+                  style="
+                    flex: 0 0 auto;
+                    min-width: 200px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    class="product-image"
+                    style="
+                      width: 100%;
+                      height: 150px;
+                      background-size: cover;
+                      background-position: center;
+                      background-image: url('assets/previews/necklace_00.jpg');
+                    "
+                  ></div>
+                  <div class="product-label">Classic Diamond Necklace</div>
+                </div>
+                <div
+                  class="product-card"
+                  onclick="WebARRocksMirror.load('assets/models3D/necklace_01.glb')"
+                  style="
+                    flex: 0 0 auto;
+                    min-width: 200px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    class="product-image"
+                    style="
+                      width: 100%;
+                      height: 150px;
+                      background-size: cover;
+                      background-position: center;
+                      background-image: url('assets/previews/necklace_01.jpg');
+                    "
+                  ></div>
+                  <div class="product-label">Diamond Elegance Choker</div>
+                </div>   
+                
+                <div
+                  class="product-card"
+                  onclick="WebARRocksMirror.load('assets/models3D/necklace_02.glb')"
+                  style="
+                    flex: 0 0 auto;
+                    min-width: 200px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    class="product-image"
+                    style="
+                      width: 100%;
+                      height: 150px;
+                      background-size: cover;
+                      background-position: center;
+                      background-image: url('assets/previews/necklace_02.jpg');
+                    "
+                  ></div>
+                  <div class="product-label">Emerald Spiral Pendant</div>
+                </div>
+                <div
+                  class="product-card"
+                  onclick="WebARRocksMirror.load('assets/models3D/necklace_03.glb')"
+                  style="
+                    flex: 0 0 auto;
+                    min-width: 200px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    class="product-image"
+                    style="
+                      width: 100%;
+                      height: 150px;
+                      background-size: cover;
+                      background-position: center;
+                      background-image: url('assets/previews/necklace_03.jpg');
+                    "
+                  ></div>
+                  <div class="product-label">Obsidian Charm Loop</div>
+                </div>
+                <div
+                  class="product-card"
+                  onclick="WebARRocksMirror.load('assets/models3D/necklace_04.glb')"
+                  style="
+                    flex: 0 0 auto;
+                    min-width: 200px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    class="product-image"
+                    style="
+                      width: 100%;
+                      height: 150px;
+                      background-size: cover;
+                      background-position: center;
+                      background-image: url('assets/previews/necklace_04.jpg');
+                    "
+                  ></div>
+                  <div class="product-label">Pharaoh's Luxe Collar</div>
+                </div>
+              </div>
+
+              <div class="info-box">
+                <h4 class="info-title">How it works:</h4>
+                <ul class="info-list">
+                  <li class="info-item">
+                    <span class="step-number">1</span>
+                    <span
+                      >Allow camera access and position yourself in the
+                      frame</span
+                    >
+                  </li>
+                  <li class="info-item">
+                    <span class="step-number">2</span>
+                    <span>Select the necklace you'd like to try on</span>
+                  </li>
+                  <li class="info-item">
+                    <span class="step-number">3</span>
+                    <span>See the virtual necklace overlay in real-time</span>
+                  </li>
+                  <li class="info-item">
+                    <span class="step-number">4</span>
+                    <span>Capture and save your favorite looks</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add controls div -->
+    <div
+      id="controls"
+      style="
         display: none;
         position: fixed;
         z-index: 2;
@@ -77,58 +301,35 @@
         left: 0;
         flex-direction: row;
         flex-wrap: wrap;
-      }
-
-      #controls > div {
-        cursor: pointer;
-        flex-grow: 1;
-        font-variant: small-caps;
-        font-size: 14pt;
-        text-align: center;
-        min-width: 110px;
-        box-sizing: border-box;
-        padding-top: 10px;
-        background: rgba(0, 0, 0, 0.5);
-        height: 40px;
-        color: #eee;
-      }
-
-      #controls > div:hover {
-        background: rgba(50, 50, 50, 0.5);
-        color: #fff;
-      }
-    </style>
-  </head>
-  <body>
-     <!--
-      The first canvas is used by WebAR.rocks.mirror
-      It is linked to a WebGL context used by the deep learning engine
-      And it displays the video of the webcam.
-      
-      Since we need to transfer the video to a texture for face detection,
-      it is not costly at all to use this texture for display.
-
-      You can tweak the rendering of the video in WebARRocksFaceThreeHelper.js,
-      by editing the fragment shader of _shps.copy
-    -->
-    <canvas id='WebARRocksFaceCanvas'></canvas>
-
-
-    <!--
-      The second canvas is used by THREE.js for 3D rendering:
-    -->
-    <canvas id='threeCanvas'></canvas>
-
-    <div id='controls'>
-      <div onclick = 'WebARRocksMirror.load("assets/models3D/blackPanther.glb")'>Black Panther</div>
-      <div onclick = 'WebARRocksMirror.load("assets/models3D/nativeAmerican.glb")'>Native American</div>
-      <div onclick = 'WebARRocksMirror.load(false)'>Video only</div>
-      <div onclick = 'WebARRocksMirror.pause(true)'>Pause</div>
-      <div onclick = 'WebARRocksMirror.resume(true)'>Resume</div>
-      <div onclick = 'WebARRocksMirror.resize(400, 400)'>Resize</div>
-      <div onclick = 'capture_image()'>Capture</div>
+      "
+    >
+      <!-- <div
+        onclick="capture_image()"
+        style="
+          cursor: pointer;
+          flex-grow: 1;
+          font-variant: small-caps;
+          font-size: 14pt;
+          text-align: center;
+          min-width: 110px;
+          box-sizing: border-box;
+          padding-top: 10px;
+          background: rgba(0, 0, 0, 0.5);
+          height: 40px;
+          color: #eee;
+        "
+      >
+        Capture Image
+      </div> -->
     </div>
 
+    <!-- Move scripts to end of body -->
+    <script>
+      // Wait for DOM to be fully loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize main function
+        main();
+      });
+    </script>
   </body>
 </html>
- 
