@@ -1,3 +1,23 @@
+:root {
+  /* Main Colors */
+  --color-peach-orange: #FFD1BA;
+  --color-coral-pink: #FF9CA6;
+  --color-snow: #FFF8F4;
+  --color-dust: #333;
+  --color-highlight: #FACC15;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-snow) 0%, var(--color-peach-orange) 100%);
+  --gradient-button: linear-gradient(135deg, var(--color-peach-orange) 0%, var(--color-coral-pink) 100%);
+  --gradient-card: linear-gradient(145deg, var(--color-snow), var(--color-peach-orange));
+  
+  /* Shadows */
+  --shadow-primary: 0 4px 12px var(--color-coral-pink);
+  --shadow-card: 0 8px 32px rgba(253, 94, 122, 0.1);
+  --shadow-card-hover: 0 12px 40px rgba(253, 94, 122, 0.2);
+  --shadow-button: 0 4px 6px -1px rgba(253, 94, 122, 0.2);
+}
+
 /* THREE JS Canvas */
 body {
   margin: 0;
@@ -558,8 +578,8 @@ body {
 }
 
 .step-number {
-  background: #4f46e5;
-  color: white;
+  background: var(--color-highlight);
+  color: var(--color-dust);  
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -568,6 +588,7 @@ body {
   justify-content: center;
   font-size: 0.9rem;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Scrollbar styling */
