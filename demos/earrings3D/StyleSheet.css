@@ -1,4 +1,8 @@
 /* THREE JS Canvas */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   overflow: hidden;

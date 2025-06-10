@@ -344,4 +344,30 @@ function initializeCardClickHandlers() {
   });
 }
 
+// Smooth scroll function
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+    // Close mobile menu if open
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu && mobileMenu.classList.contains('hidden') === false) {
+      mobileMenu.classList.add('hidden');
+    }
+  }
+}
+
+// Check for hash in URL and scroll to section on page load
+window.addEventListener('load', function() {
+  const hash = window.location.hash;
+  if (hash) {
+    // Remove the # from the hash
+    const sectionId = hash.substring(1);
+    // Small delay to ensure all content is loaded
+    setTimeout(() => {
+      scrollToSection(sectionId);
+    }, 100);
+  }
+});
+
 window.addEventListener("load", main);
