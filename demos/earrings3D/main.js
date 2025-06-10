@@ -4,16 +4,17 @@ const _settings = {
   GLTFModelURL: "assets/earringsSimple.glb",
 
   // lighting:
-  envmapURL: "assets/venice_sunset_512.hdr",
-  pointLightIntensity: 0.8,
-  pointLightY: 200, // larger -> move the pointLight to the top
-  hemiLightIntensity: 0.8,
+  // envmapURL: "assets/venice_sunset_512.hdr",
+  envmapURL: "assets/blue_photo_studio_2k.hdr",
+  pointLightIntensity: 0.9,
+  pointLightY: 20, // larger -> move the pointLight to the top
+  hemiLightIntensity: 0.9,
 
   // bloom (set to null to disable):
   bloom: {
-    threshold: 0.5, //0.99,
-    strength: 8,
-    radius: 0.6,
+    threshold: 0.78, //0.99,
+    strength: 3.13,
+    radius: 1,
   },
 
   // temporal anti aliasing. Number of samples. 0 -> disabled:
@@ -104,15 +105,19 @@ function PreviousEarring() {
 }
 
 function SelectModel(index) {
-  // Remove selected class from all cards
-  document.querySelectorAll('.card').forEach(card => {
-    card.classList.remove('selected');
+  // Remove selected class from all product cards
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.style.border = '2px solid #e5e7eb';
+    card.style.backgroundColor = 'transparent';
+    card.style.boxShadow = 'none';
   });
   
   // Add selected class to the clicked card
-  const selectedCard = document.querySelector(`.card[data-earring="${index}"]`);
+  const selectedCard = document.querySelector(`.product-card[data-earring="${index}"]`);
   if (selectedCard) {
-    selectedCard.classList.add('selected');
+    selectedCard.style.border = '2px solid #ca8a04'; // Yellow-600
+    selectedCard.style.backgroundColor = '#fefce8'; // Yellow-50
+    selectedCard.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1)'; // shadow-lg
   }
   
   currentEarring = index;
